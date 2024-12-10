@@ -1,2 +1,2 @@
 # Synk-Encodings
-- [Synk.Encodings.CrockfordUuid](./src/Synk.Encodings.Crockford)
+- [Synk.Encodings.Crockford](./src/Synk.Encodings.Crockford)
