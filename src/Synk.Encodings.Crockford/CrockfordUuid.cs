@@ -8,19 +8,22 @@ public struct CrockfordUuid
     // private static readonly string _checksumChars = "*~$=U"; 
     private const string CrockfordChars = "0123456789ABCDEFGHJKMNPQRSTVWXYZ"; 
     private readonly string _str; 
+    // TODO: use a fixed size char array instead of a string
+    private readonly char[] _encoded = new char[26]; 
     public readonly int Length => _str.Length; 
     public static readonly CrockfordUuid Empty; 
-    private CrockfordUuid(Guid guid)    
+    private CrockfordUuid(byte[] bytes)    
     {
-        _str = EncodeSegmented(guid.ToByteArray(), '-', 4); 
+        _str = EncodeSegmented(input: bytes, separater: '-', segmentLength: 4); 
     }
     public override readonly string ToString()
     {
         return _str; 
     }
-    public static CrockfordUuid FromGuid(Guid guid)
+    public static CrockfordUuid FromGuid(Guid guid) => new(guid.ToByteArray()); 
+    public static CrockfordUuid WithChecksum()
     {
-        return new CrockfordUuid(guid); 
+        throw new NotImplementedException(); 
     }
     private static ReadOnlySpan<char> Encode(byte[] input)
     {
