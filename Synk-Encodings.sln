@@ -1,0 +1,27 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{CA475557-E13C-48A7-922B-5B789F899ECE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Synk.Encodings.Crockford", "src\Synk.Encodings.Crockford\Synk.Encodings.Crockford.csproj", "{335A31C8-A240-4B7B-A2C6-510C939ECA41}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{335A31C8-A240-4B7B-A2C6-510C939ECA41}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{335A31C8-A240-4B7B-A2C6-510C939ECA41}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{335A31C8-A240-4B7B-A2C6-510C939ECA41}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{335A31C8-A240-4B7B-A2C6-510C939ECA41}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{335A31C8-A240-4B7B-A2C6-510C939ECA41} = {CA475557-E13C-48A7-922B-5B789F899ECE}
+	EndGlobalSection
+EndGlobal
