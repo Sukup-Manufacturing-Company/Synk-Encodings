@@ -19,7 +19,32 @@ public readonly struct CrockfordUuid
     {
         return GetFormattedString(_encodedChars, separater, segmentLength); 
     }
-    public static CrockfordUuid FromGuid(Guid guid) => new(guid.ToByteArray()); 
+    public static CrockfordUuid FromGuid(Guid guid)
+    {
+        if (guid == Guid.Empty)    
+        {
+            throw new ArgumentException("An empty Guid cannot be used to initialize a CrockfordUuid"); 
+        }
+
+        var bytes = guid.ToByteArray(); 
+        return new CrockfordUuid(bytes); 
+    } 
+    public static CrockfordUuid Parse(string input) 
+    {
+        var bytes = GetBytes(input);
+        if (bytes.Length is not 16)
+        {
+            throw new ArgumentException("Unable to parse input. Input string is not a proper CrockfordUuid"); 
+        }
+
+        return new CrockfordUuid(bytes); 
+    }
+    public Guid ToGuid() 
+    {
+        string encodedStr = new(_encodedChars); 
+        byte[] guidBytes = GetBytes(encodedStr); 
+        return new Guid(guidBytes); 
+    }
     private static void EncodeCharacters(byte[] source, ref char[] dest)
     {
         ArgumentNullException.ThrowIfNull(source); 
@@ -59,15 +84,14 @@ public readonly struct CrockfordUuid
 
         return sb.ToString(); 
     }
-    
-    public static CrockfordUuid Parse(string input)
+    private static byte[] GetBytes(string input) 
     {
         ArgumentNullException.ThrowIfNull(input); 
         
         input = input.Replace("-", string.Empty).ToUpperInvariant(); 
         if (input.Length is 0)
         {
-            return Empty; 
+            return []; 
         }
 
         byte[]? output = new byte[input.Length * 5 / 8];
@@ -101,8 +125,7 @@ public readonly struct CrockfordUuid
                 outputBits = 0;
             }
         }
-
-        return new CrockfordUuid(output); 
+        return output; 
     }
     private static int WriteEncodedCharacters(byte[] source, char[] dest)
     {
