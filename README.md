@@ -3,6 +3,12 @@
 ## Synk.Encodings.Crockford 
 - [Synk.Encodings.Crockford](./src/Synk.Encodings.Crockford)
 
+### Installing
+
+```powershell
+dotnet add package Synk.Encodings.Crockford
+```
+
 ### Usage 
 
 ```c#
