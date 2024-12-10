@@ -1,9 +1,16 @@
-﻿using Synk.Encodings.Crockford; 
+﻿using Synk.Encodings.Crockford;
+using Xunit.Abstractions;
 
 namespace Synk.Encodings.Tests;
 
 public class CrockfordUuidTests
 {
+    private readonly ITestOutputHelper _output; 
+    public CrockfordUuidTests(ITestOutputHelper output)
+    {
+        _output = output; 
+    }
+
     [Fact]
     public void Parse_Correctly_Parses_The_Input_String()
     {
@@ -11,8 +18,9 @@ public class CrockfordUuidTests
         var uuid = CrockfordUuid.Parse(expected); 
         string actual = uuid.ToString(); 
 
-        Console.WriteLine(actual);
-        Console.WriteLine(uuid.ToString('-', 6)); 
+        _output.WriteLine(actual); 
+        _output.WriteLine(uuid.ToString('-', 6)); 
+
         Assert.Equal(expected, actual); 
     }
 }
