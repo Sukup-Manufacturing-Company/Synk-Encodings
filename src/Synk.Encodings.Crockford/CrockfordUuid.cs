@@ -2,14 +2,12 @@
 using Synk.Encodings.Crockford.Helpers; 
 
 namespace Synk.Encodings.Crockford;
-public struct CrockfordUuid
+public readonly struct CrockfordUuid
 {
-    private const string Base32Chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
-    // private static readonly string _checksumChars = "*~$=U"; 
-    private const string CrockfordChars = "0123456789ABCDEFGHJKMNPQRSTVWXYZ"; 
+    private readonly byte[] CrockfordChars = "0123456789ABCDEFGHJKMNPQRSTVWXYZ"u8.ToArray(); 
     private readonly string _str; 
     // TODO: use a fixed size char array instead of a string
-    private readonly char[] _encoded = new char[26]; 
+    private readonly byte[] _encodedBytes = new byte[26]; 
     public readonly int Length => _str.Length; 
     public static readonly CrockfordUuid Empty; 
     private CrockfordUuid(byte[] bytes)    
@@ -20,12 +18,12 @@ public struct CrockfordUuid
     {
         return _str; 
     }
-    public static CrockfordUuid FromGuid(Guid guid) => new(guid.ToByteArray()); 
-    public static CrockfordUuid WithChecksum()
+    public readonly string ToString(char separater, int segmentLength)
     {
-        throw new NotImplementedException(); 
+       _str.ToCharArray(); 
     }
-    private static ReadOnlySpan<char> Encode(byte[] input)
+    public static CrockfordUuid FromGuid(Guid guid) => new(guid.ToByteArray()); 
+    private ReadOnlySpan<char> Encode(byte[] input)
     {
         ArgumentNullException.ThrowIfNull(input); 
 
@@ -34,7 +32,7 @@ public struct CrockfordUuid
         {
             byte a, b, c, d, e, f, g, h;
             int numCharsToOutput = GetNextGroup(input, ref offset, out a, out b, out c, out d, out e, out f, out g, out h);
-
+            _encodedBytes[0] = CrockfordChars[a]; 
             sb.AppendWhen(numCharsToOutput >= 1, CrockfordChars[a]); 
             sb.AppendWhen(numCharsToOutput >= 2, CrockfordChars[b]);
             sb.AppendWhen(numCharsToOutput >= 3, CrockfordChars[c]);
@@ -80,20 +78,20 @@ public struct CrockfordUuid
             return Empty; 
         }
 
-        var output = new byte[input.Length * 5 / 8];
-        var bitIndex = 0;
-        var inputIndex = 0;
-        var outputBits = 0;
-        var outputIndex = 0;
+        byte[]? output = new byte[input.Length * 5 / 8];
+        int bitIndex = 0;
+        int inputIndex = 0;
+        int outputBits = 0;
+        int outputIndex = 0;
         while (outputIndex < output.Length)
         {
-            var byteIndex = Base32Chars.IndexOf(input[inputIndex]);
+            int byteIndex = CrockfordChars.IndexOf(input[inputIndex]);
             if (byteIndex < 0)
             {
                 throw new FormatException();
             }
 
-            var bits = Math.Min(5 - bitIndex, 8 - outputBits);
+            int bits = Math.Min(5 - bitIndex, 8 - outputBits);
             output[outputIndex] <<= bits;
             output[outputIndex] |= (byte)(byteIndex >> (5 - (bitIndex + bits)));
 
@@ -112,53 +110,8 @@ public struct CrockfordUuid
             }
         }
 
-        throw new NotImplementedException(); 
+        return new CrockfordUuid(output); 
     }
-    public static byte[] Decode(string input)
-    {
-        ArgumentNullException.ThrowIfNull(input); 
-
-        input = input.TrimEnd('=').ToUpperInvariant();
-        if (input.Length == 0)
-        {
-            return new byte[0];
-        }
-
-        var output = new byte[input.Length * 5 / 8];
-        var bitIndex = 0;
-        var inputIndex = 0;
-        var outputBits = 0;
-        var outputIndex = 0;
-        while (outputIndex < output.Length)
-        {
-            var byteIndex = Base32Chars.IndexOf(input[inputIndex]);
-            if (byteIndex < 0)
-            {
-                throw new FormatException();
-            }
-
-            var bits = Math.Min(5 - bitIndex, 8 - outputBits);
-            output[outputIndex] <<= bits;
-            output[outputIndex] |= (byte)(byteIndex >> (5 - (bitIndex + bits)));
-
-            bitIndex += bits;
-            if (bitIndex >= 5)
-            {
-                inputIndex++;
-                bitIndex = 0;
-            }
-
-            outputBits += bits;
-            if (outputBits >= 8)
-            {
-                outputIndex++;
-                outputBits = 0;
-            }
-        }
-        return output;
-    }
-
-    // returns the number of bytes that were output
     private static int GetNextGroup(byte[] input, ref int offset, out byte a, out byte b, out byte c, out byte d, out byte e, out byte f, out byte g, out byte h)
     {
         uint b1, b2, b3, b4, b5;
