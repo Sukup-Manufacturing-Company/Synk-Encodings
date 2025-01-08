@@ -43,6 +43,7 @@ public readonly struct CrockfordUuid
     {
         string encodedStr = new(_encodedChars); 
         byte[] guidBytes = GetBytes(encodedStr); 
+        Console.WriteLine(Encoding.Default.GetString(guidBytes));
         return new Guid(guidBytes); 
     }
     private static void EncodeCharacters(byte[] source, ref char[] dest)
